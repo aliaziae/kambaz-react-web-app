@@ -1,7 +1,5 @@
 import { Col, ListGroup, Row } from "react-bootstrap";
 import { BsGripVertical, BsPencilSquare } from "react-icons/bs";
-import LessonControlButtons from "../Modules/LessonControlButtons";
-import ModuleControlButtons from "../Modules/ModuleControlButtons";
 import AssignmentControls from "./AssignmentControls";
 import AssignmentHeaderControls from "./AssignmentHeaderControls";
 import { IoMdArrowDropdown } from "react-icons/io";
