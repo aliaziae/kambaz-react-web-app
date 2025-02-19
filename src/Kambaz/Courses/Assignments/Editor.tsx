@@ -1,12 +1,17 @@
 import { FormGroup, FormLabel, FormControl, FormSelect, Form } from "react-bootstrap";
+import { Link, useParams } from "react-router-dom";
+import * as db from "../../Database";
 
 export default function AssignmentEditor() {
+    const { aid } = useParams();
+    const assignment = db.assignments.find((assignment) => assignment._id == aid);
+    const cid  = assignment?.course;
+
     return (
         <div id="wd-assignment-editor" className="mb-5 p-3">
             <form>
                 <FormGroup className="mb-4" controlId="wd-assignment-name">
-                    <FormLabel for="inputName">Assignment Name</FormLabel>
-                    <FormControl type="text" value="A1" id="inputName" />
+                    <FormControl type="text" value={assignment?.title} id="inputName" />
                 </FormGroup>
                 <FormGroup className="mb-4" controlId="wd-assignment-description">
                     <FormControl as="textarea" rows={10}
@@ -85,8 +90,13 @@ export default function AssignmentEditor() {
                 <br/>
                 <hr />
                 <div className="float-end">
-                    <button className="btn btn-l border-dark">Cancel</button>
+                    <Link to={`/Kambaz/Courses/${cid}/Assignments`}>
+                    <button
+                    className="btn btn-l border-dark">Cancel</button>
+                    </Link>
+                    <Link to={`/Kambaz/Courses/${cid}/Assignments`}>
                     <button className="btn btn-l btn-danger m-3">Save</button>
+                    </Link>
                 </div>
             </form>
         </div>
