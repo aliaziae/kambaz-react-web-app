@@ -1,48 +1,68 @@
 import { Col, ListGroup, Row } from "react-bootstrap";
-import { Link, useLocation, useParams } from "react-router";
-import * as db from "../../Database";
+import { Route, Routes, useNavigate, useParams } from "react-router";
 import { BsGripVertical, BsPencilSquare } from "react-icons/bs";
 import AssignmentControls from "./AssignmentControls";
 import AssignmentHeaderControls from "./AssignmentHeaderControls";
 import { IoMdArrowDropdown } from "react-icons/io";
 import AssignmentControlButtons from "./AssignmentControlButtons";
+import FacultyOnly from "../../Account/FacultyOnly";
+import Editor from "./Editor";
+import { useSelector } from "react-redux";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments;
-  const { pathname } = useLocation();
+  const { assignments } = useSelector((state: any) => state.assignmentReducer);
+  const navigate = useNavigate();
+
+  // navigates to the edit assignment screen when the pencil button is pressed
+  const editAssignment = (assignmentId: string) => {
+    navigate(`/Kambaz/Courses/${cid}/Assignments/${assignmentId}`, { state: cid });
+  };
 
   return (
     <div>
-      <AssignmentControls /><br /><br /><br /><br />
+      <FacultyOnly>
+        <AssignmentControls /><br /><br /><br /><br />
+      </FacultyOnly>
       <ul id="wd-assignments" className="list-group rounded-0">
         <li className="wd-assignment-header list-group-item fs-5 p-3 ps-2 bg-secondary border-gray">
-          <BsGripVertical className="me-2 fs-3" />
+          <FacultyOnly>
+            <BsGripVertical className="me-2 fs-3" />
+          </FacultyOnly>
           <IoMdArrowDropdown />
-          ASSIGNMENTS <AssignmentHeaderControls />
+          ASSIGNMENTS
+          <FacultyOnly>
+            <AssignmentHeaderControls />
+          </FacultyOnly>
         </li>
         {assignments
           .filter((assignment: any) => assignment.course === cid)
           .map((assignment: any) => (
-          <ListGroup.Item as={Link} to={`${pathname}/${assignment._id}`} className={`wd-assignment p-3 ps-1`} >
+            <ListGroup.Item className={`wd-assignment p-3 ps-1`} >
               <Row>
-                <Col data-valign="center" className="col-2 p-3">
-                  <BsGripVertical className="me-2 fs-3" />
-                  <BsPencilSquare color="green" className="me-2 fs-3" />
-                </Col>
+                <FacultyOnly>
+                  <Col data-valign="center" className="col-2 p-3">
+                    <BsGripVertical className="me-2 fs-3" />
+                    <BsPencilSquare onClick={() => editAssignment(assignment._id)} color="green" className="me-2 fs-3" />
+                  </Col>
+                </FacultyOnly>
                 <Col className="col-8 p-3">
                   <h4>{assignment.title}</h4>
                   <small className="text-secondary"> <span className="text-danger">Multiple Modules </span>
                     | <strong> Not available until
-                    </strong> May 6 at 12:00am | <strong>Due</strong> May 13
-                    at 11:59pm | 100 pts</small>
+                    </strong> {assignment.availableFrom} | <strong>Due</strong> {assignment.due} | {assignment.points} points</small>
                 </Col>
-                <Col className="col-2 p-3">
-                  <AssignmentControlButtons />
-                </Col>
+                <FacultyOnly>
+                  <Col className="col-2 p-3">
+                    <AssignmentControlButtons assignmentId={assignment._id} />
+                  </Col>
+                </FacultyOnly>
               </Row>
             </ListGroup.Item>
           ))}</ul>
+      <Routes>
+        <Route path="/newAssignment" element={<Editor />} />
+      </Routes>
     </div>
   );
 }

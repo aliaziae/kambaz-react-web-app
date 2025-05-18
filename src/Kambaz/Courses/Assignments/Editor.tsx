@@ -1,28 +1,75 @@
 import { FormGroup, FormLabel, FormControl, FormSelect, Form } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
-import * as db from "../../Database";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { addAssignment, editAssignment, updateAssignment } from "./reducer";
 
 export default function AssignmentEditor() {
+    // get current assignment if any
     const { aid } = useParams();
-    const assignment = db.assignments.find((assignment) => assignment._id == aid);
-    const cid  = assignment?.course;
+    const editing = aid !== "NewAssignment";
+
+    const dispatch = useDispatch();
+
+    const { assignments } = useSelector((state: any) => state.assignmentReducer);
+    const currentAssignment = assignments.find((assignment: any) => assignment._id == aid);
+
+    // get CID that user was on 
+   const { state } = useLocation();
+    const cid = state;
+
+    const [_id, setAssignmentId] = useState("");
+    const [title, setAssignmentTitle] = useState("");
+    const [course] = useState("");
+    const [description, setAssignmentDescription] = useState("");
+    const [points, setAssignmentPoints] = useState(0);
+    const [due, setAssignmentDue] = useState("");
+    const [availableFrom, setAssignmentAvailFrom] = useState("");
+    const [availableUntil, setAssignmentAvailUntil] = useState("");
+
+    if (currentAssignment && _id === "") {
+        setAssignmentId(currentAssignment._id);
+        setAssignmentTitle(currentAssignment.title);
+        setAssignmentDescription(currentAssignment.description);
+        setAssignmentPoints(currentAssignment.points);
+        setAssignmentDue(currentAssignment.due);
+        setAssignmentAvailFrom(currentAssignment.availableFrom);
+        setAssignmentAvailUntil(currentAssignment.availableUntil);
+      };
+
+      const save = () =>{
+        const assignment = {_id, title, description, points, due, availableFrom, availableUntil, course};
+        assignment.course = cid
+        if(!editing){
+          dispatch(addAssignment(assignment));
+        }
+        else{
+          dispatch(editAssignment(aid));
+          dispatch(updateAssignment(assignment));
+          dispatch(updateAssignment({ ...assignment, editing: false }));
+        }
+    }
 
     return (
         <div id="wd-assignment-editor" className="mb-5 p-3">
             <form>
                 <FormGroup className="mb-4" controlId="wd-assignment-name">
-                    <FormControl type="text" value={assignment?.title} id="inputName" />
+                    <FormControl type="text" placeholder="Assignment title" value={title} id="inputName"
+                    onChange={(e) => setAssignmentTitle(e.target.value)} />
                 </FormGroup>
                 <FormGroup className="mb-4" controlId="wd-assignment-description">
                     <FormControl as="textarea" rows={10}
-                        value="This assignment is available online" />
+                        placeholder="Assignment description"
+                        value={description} 
+                        onChange={(e) => setAssignmentDescription(e.target.value)} />
                 </FormGroup>
                 <FormGroup className="mb-4 d-flex justify-content-end" controlId="wd-assignment-points">
                     <FormLabel for="inputPoints" class="col-sm-3 col-form-label d-flex justify-content-end me-3">
                         Points</FormLabel>
                     <div className="col-sm-6">
-                        <FormControl type="text"
-                            value="100" id="inputPoints" />
+                        <FormControl type="text" placeholder=""
+                            value={points} id="inputPoints"
+                            onChange={(e) => setAssignmentPoints(Number(e.target.value))} />
                     </div>
                 </FormGroup>
                 <FormGroup className="mb-4 d-flex justify-content-end" controlId="wd-assignment-group">
@@ -73,29 +120,32 @@ export default function AssignmentEditor() {
                         </FormGroup>
                         <FormGroup className="mb-4" controlId="wd-due-date">
                             <FormLabel for="dueDate">Due</FormLabel>
-                            <FormControl type="date" value="2024-05-13" id="dueDate" />
+                            <FormControl type="date" defaultValue="2025-05-16" value={due} id="dueDate" 
+                            onChange={(e) => setAssignmentDue(e.target.value)}/>
                         </FormGroup>
                         <FormGroup className="row mb-4">
                             <div className="col col-6">
                                 <FormLabel for="availableFrom">Available From</FormLabel>
-                                <FormControl type="date" value="2024-05-06" id="availableFrom" />
+                                <FormControl type="date" defaultValue="2025-05-16" value={availableFrom} id="availableFrom" 
+                                onChange={(e) => setAssignmentAvailFrom(e.target.value)}/>
                             </div>
                             <div className="col col-6">
                                 <FormLabel for="availableUntil">Until</FormLabel>
-                                <FormControl type="date" id="availableUntil" />
+                                <FormControl type="date" defaultValue="2025-05-16" value={availableUntil} id="availableUntil"
+                                onChange={(e) => setAssignmentAvailUntil(e.target.value)}/>
                             </div>
                         </FormGroup>
                     </div>
                 </FormGroup>
-                <br/>
+                <br />
                 <hr />
                 <div className="float-end">
                     <Link to={`/Kambaz/Courses/${cid}/Assignments`}>
-                    <button
-                    className="btn btn-l border-dark">Cancel</button>
+                        <button
+                            className="btn btn-l border-dark">Cancel</button>
                     </Link>
                     <Link to={`/Kambaz/Courses/${cid}/Assignments`}>
-                    <button className="btn btn-l btn-danger m-3">Save</button>
+                        <button onClick={save} className="btn btn-l btn-danger m-3">Save</button>
                     </Link>
                 </div>
             </form>
