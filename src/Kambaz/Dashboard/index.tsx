@@ -2,7 +2,7 @@ import { Card, Button, FormControl } from "react-bootstrap";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import FacultyOnly from "../Account/FacultyOnly";
 import { useState } from "react";
 
@@ -18,7 +18,6 @@ export default function Dashboard({ courses, enrollments, course, setCourse, add
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   const [showAll, toggleShowAll] = useState(false);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
 

@@ -1,5 +1,4 @@
 import axios from "axios";
-import CourseNavigation from "../Courses/Navigation";
 export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
 export const USERS_API = `${REMOTE_SERVER}/api/users`;
 const axiosWithCredentials = axios.create({ withCredentials: true });
