@@ -2,7 +2,9 @@ import { FormGroup, FormLabel, FormControl, FormSelect, Form } from "react-boots
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { addAssignment, editAssignment, updateAssignment } from "./reducer";
+import { addAssignment, updateAssignment } from "./reducer";
+import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
 
 export default function AssignmentEditor() {
     // get current assignment if any
@@ -37,16 +39,16 @@ export default function AssignmentEditor() {
         setAssignmentAvailUntil(currentAssignment.availableUntil);
       };
 
-      const save = () =>{
-        const assignment = {_id, title, description, points, due, availableFrom, availableUntil, course};
-        assignment.course = cid
+      const save = async () =>{
+        if (!cid) return;
+        const newAssignment = {_id, title, description, points, due, availableFrom, availableUntil, course};
+        newAssignment.course = cid
         if(!editing){
-          dispatch(addAssignment(assignment));
-        }
+            const assignment = await coursesClient.createAssignmentsForCourse(cid, newAssignment);
+            dispatch(addAssignment(assignment));        }
         else{
-          dispatch(editAssignment(aid));
-          dispatch(updateAssignment(assignment));
-          dispatch(updateAssignment({ ...assignment, editing: false }));
+            await assignmentsClient.updateAssignment(newAssignment);
+            dispatch(updateAssignment(newAssignment));
         }
     }
 

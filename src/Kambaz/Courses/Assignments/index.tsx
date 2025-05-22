@@ -7,17 +7,32 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import AssignmentControlButtons from "./AssignmentControlButtons";
 import FacultyOnly from "../../Account/FacultyOnly";
 import Editor from "./Editor";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import * as coursesClient from "../client";
+import { useEffect } from "react";
+import { setAssignments } from "./reducer";
+
 
 export default function Assignments() {
   const { cid } = useParams();
   const { assignments } = useSelector((state: any) => state.assignmentReducer);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // navigates to the edit assignment screen when the pencil button is pressed
   const editAssignment = (assignmentId: string) => {
     navigate(`/Kambaz/Courses/${cid}/Assignments/${assignmentId}`, { state: cid });
   };
+
+  // fetches all of the assignments upon load
+  const fetchAssignments = async () => {
+    const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
+    dispatch(setAssignments(assignments));
+  };
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
+
 
   return (
     <div>
@@ -36,7 +51,6 @@ export default function Assignments() {
           </FacultyOnly>
         </li>
         {assignments
-          .filter((assignment: any) => assignment.course === cid)
           .map((assignment: any) => (
             <ListGroup.Item className={`wd-assignment p-3 ps-1`} >
               <Row>

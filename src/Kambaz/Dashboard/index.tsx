@@ -5,18 +5,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import FacultyOnly from "../Account/FacultyOnly";
 import { useState } from "react";
-import { addEnrollment, deleteEnrollment } from "./enrollmentReducer";
 
-
-export default function Dashboard({ courses, course, setCourse, addNewCourse,
-  deleteCourse, updateCourse }: {
-    courses: any[]; course: any; setCourse: (course: any) => void;
-    addNewCourse: () => void; deleteCourse: (course: any) => void;
+export default function Dashboard({ courses, enrollments, course, setCourse, addNewCourse,
+  addNewEnrollment, deleteEnrollment, deleteCourse, updateCourse }: {
+    courses: any[]; enrollments: any[]; course: any; setCourse: (course: any) => void;
+    addNewCourse: () => void; addNewEnrollment: (course: any) => void; 
+    deleteEnrollment: (courseId: any) => void;
+    deleteCourse: (course: any) => void;
     updateCourse: () => void;
   }) {
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments } = useSelector((state: any) => state.enrollmentReducer);
 
   const [showAll, toggleShowAll] = useState(false);
   const dispatch = useDispatch();
@@ -35,17 +34,6 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
         navigate(`/Kambaz/Courses/${courseId}/Home`);
       }
     }
-
-  // enrolls user in given course
-  function enroll(courseId: string) {
-    dispatch(addEnrollment({ user: currentUser._id, course: courseId }));
-  }
-
-  // unenrolls user in given course
-  function unenroll(courseId: string) {
-    dispatch(deleteEnrollment(enrollments
-      .find((enrollment: { user: string, course: string }) => enrollment && enrollment.user === currentUser._id && enrollment.course === courseId)._id))
-  }
 
   return (
     <div id="wd-dashboard">
@@ -117,7 +105,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
                           {enrolled(course._id) ?
                             <button onClick={(event) => {
                               event.preventDefault();
-                              unenroll(course._id);
+                              {deleteEnrollment(course._id)};
                             }} className="btn btn-danger me-2 float-end btn-sm"
                               id="wd-unenroll-course-click">
                               Unenroll
@@ -125,7 +113,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
                             <button id="wd-enroll-course-click"
                               onClick={(event) => {
                                 event.preventDefault();
-                                enroll(course._id);
+                                {addNewEnrollment(course)};
                               }}
                               className="btn btn-success me-2 float-end btn-sm" >
                               Enroll
