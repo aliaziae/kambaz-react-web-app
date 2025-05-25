@@ -1,0 +1,75 @@
+[
+    {
+        "_id": "1",
+        "title": "Question 1",
+        "type": "MULTIPLE_CHOICE",
+        "questionBody": "What is 2+2?",
+        "course": "RS101",
+        "quizId": "123",
+        "answerOptions": [
+            {
+                "_id": "1",
+                "answer": "4"
+            },
+            {
+                "_id": "2",
+                "answer": "5"
+            },
+            {
+                "_id": "3",
+                "answer": "6"
+            }
+        ],
+        "correctAnswer": {
+            "_id": "1",
+            "answer": "4"
+        },
+        "points": "2",
+        "editing": false
+    },
+    {
+        "_id": "2",
+        "title": "Question 2",
+        "type": "TRUE_FALSE",
+        "questionBody": "Is it true that 2+2=4?",
+        "course": "RS101",
+        "quizId": "123",
+        "answerOptions": [
+            {
+                "_id": "1",
+                "answer": true
+            },
+            {
+                "_id": "2",
+                "answer": false
+            }
+        ],
+        "correctAnswer": {
+            "_id": "1",
+            "answer": true
+        },
+        "points": "2",
+        "editing": false
+    },
+    {
+        "_id": "3",
+        "title": "Question 3",
+        "type": "FILL_IN_BLANK",
+        "questionBody": "What is 2+2?",
+        "course": "RS101",
+        "quizId": "123",
+        "answerOptions": [
+            {
+                "_id": "1",
+                "answer": "4"
+            },
+            {
+                "_id": "2",
+                "answer": "four"
+            }
+        ],
+        "correctAnswer": "",
+        "points": "2",
+        "editing": false
+    }
+]

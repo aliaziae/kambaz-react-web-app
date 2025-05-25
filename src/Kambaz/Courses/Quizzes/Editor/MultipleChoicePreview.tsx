@@ -1,0 +1,79 @@
+import { FormGroup, Form, InputGroup, Button } from "react-bootstrap";
+import { useState } from "react";
+
+
+export default function MultipleChoicePreview({ question, updateQuestion, deleteQuestion }: {
+    question: any
+    updateQuestion: (question: any) => void
+    deleteQuestion: (qid: string) => void
+}) {
+
+
+    const [_id, setQuestionId] = useState("");
+    const [title, setQuestionTitle] = useState("");
+    const [course, setQuestionCourse] = useState("");
+    const [type, setQuestionType] = useState("");
+    const [questionBody, setQuestionQuestion] = useState("");
+    const [points, setQuestionPoints] = useState(0);
+    const [quizId, setQuestionQuizId] = useState("");
+    const [answerOptions, setQuestionAnswerOptions] = useState([{}]);
+    const [correctAnswer, setQuestionCorrectAnswer] = useState({
+        "_id": "",
+        "answer": ""
+    });
+    const [editing, setQuestionEditing] = useState(false);
+
+
+    if (question && _id === "") {
+        setQuestionId(question._id);
+        setQuestionTitle(question.title);
+        setQuestionCourse(question.course);
+        setQuestionType(question.type);
+        setQuestionQuestion(question.questionBody);
+        setQuestionPoints(question.points);
+        setQuestionQuizId(question.quizId);
+        setQuestionAnswerOptions(question.answerOptions);
+        setQuestionCorrectAnswer(question.correctAnswer);
+        setQuestionEditing(question.editing);
+    };
+
+    const sendQuestionUpdates = () => {
+        const newQuestion = { _id, title, course, type, questionBody, points, quizId, answerOptions, correctAnswer, editing };
+        { updateQuestion(newQuestion) };
+    }
+
+    const editQuestion = () => {
+        setQuestionEditing(true);
+        sendQuestionUpdates();
+    }
+
+    return (
+        <div id="wd-multiple-choice-preview" className="mb-4 p-4 border border-medium rounded-4">
+            <div className="row">
+            <h4>{title}</h4>
+            </div>
+            <br/>
+            <p>{questionBody}</p>
+            <hr/>
+            {answerOptions.map((answer: any) => (
+                <FormGroup>
+                    <InputGroup className="mb-3 mt-3">
+                        <Form.Check type="radio" id="possibleAnswerCheck" label={answer.answer} checked={false}
+                             className=" my-2" />
+                    </InputGroup>
+                    <hr/>
+                </FormGroup>
+            ))}
+            <div className="d-flex justify-content-end mt-5">
+                <Button className="me-2" onClick={editQuestion} variant="secondary">
+                    Edit Question
+                </Button>
+                <Button onClick={() => {deleteQuestion(_id)}} variant="danger">
+                    Delete
+                </Button>
+            </div>
+            <br />
+        </div>
+    );
+}
+

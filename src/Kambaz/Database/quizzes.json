@@ -1,0 +1,22 @@
+[
+    {
+        "_id": "123",
+        "title": "Quiz 1",
+        "course": "RS101",
+        "description": "This is an example quiz",
+        "type": "Graded Quiz",
+        "points": "100",
+        "group": "QUIZZES",
+        "shuffleAnswers": true,
+        "timeLimit": "20",
+        "multipleAttempts": false,
+        "accessCode": "123",
+        "oneQuestionAtTime": true,
+        "webcam": false,
+        "lockQuestions": false,
+        "dueDate": "2025-07-31",
+        "availableDate": "2025-07-31",
+        "untilDate": "2025-07-31",
+        "published": false
+      }
+    ]
